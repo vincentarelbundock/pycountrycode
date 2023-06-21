@@ -11,43 +11,59 @@ with open(data_path, 'r') as f:
     data = [(x[0], x[1:]) for x in data]
     data = dict(data)
 
-def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en'):
+def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en', origin_regex = False):
+
+    # sanity checks
+    if origin not in data.keys():
+        raise ValueError(f"origin {origin} not found in the code list.")
+    else:
+        origin = data[origin]
+
+    if destination not in data.keys():
+        raise ValueError(f"destination {destination} not found in the code list.")
+    else:
+        destination = data[destination]
+
+
     if isinstance(sourcevar, str):
         sourcevar = [sourcevar]
         loner = True
     else:
         loner = False
 
-    try:
-        sourcevar = [f"{x:.0f}" for x in sourcevar]
-    except:
-        sourcevar = [str(x).strip() for x in sourcevar]
+    mapping = dict(zip(origin, destination))
 
-    destination_sourcevar = data[destination]
-
-    if origin == 'country_name':
-        origin_sourcevar = [f'(?i){x}' for x in data['regex']]
+    if origin_regex:
+        out = replace_regex(sourcevar, mapping)
     else:
-        origin_sourcevar = data[origin]
+        out = replace_exact(sourcevar, mapping)
 
-    idx = [(v != 'NA') and (origin_sourcevar[i] != 'NA') for i, v in enumerate(destination_sourcevar)]
-
-    origin_sourcevar = [v for i, v in enumerate(origin_sourcevar) if idx[i]]
-    destination_sourcevar = [v for i, v in enumerate(destination_sourcevar) if idx[i]]
-
-    dictionary = dict(zip(origin_sourcevar, destination_sourcevar))
-
-    if origin != 'country_name':
-        sourcevar_new = ["None" if x not in origin_sourcevar else x for x in sourcevar]
-    else:
-        sourcevar_new = copy(sourcevar)
-
-    for k in dictionary.keys():
-        sourcevar_new = [dictionary[k] if (match := re.match(f'^{k}$', x)) is not None else x for x in sourcevar_new]
-
-    sourcevar_new = [None if x == 'None' else x for x in sourcevar_new]
+    # TODO: sanitize input
+    # white space only if string
+    # sourcevar = [str(x).strip() for x in sourcevar]
+    # round numeric if
+    # sourcevar = [f"{x:.0f}" for x in sourcevar]
 
     if loner:
-        sourcevar_new = sourcevar_new[0]
+        out = out[0]
 
-    return sourcevar_new
+    return out
+
+
+def replace_exact(sourcevar, mapping):
+    result = [mapping.get(item, None) for item in sourcevar]
+    return result
+
+def replace_regex(sourcevar, mapping):
+    result = []
+    for item in sourcevar:
+        replaced = False
+        for pattern, replacement in mapping.items():
+            if re.search(pattern, item):
+                result.append(re.sub(pattern, replacement, item))
+                replaced = True
+                break
+        if not replaced:
+            result.append(None)
+
+    return result
