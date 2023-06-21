@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "pycountrycode"
-version = "0.1.0"
+name = "countrycode"
+version = "0.3.0"
 description = ""
 authors = ["Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>"]
 readme = "README.md"
