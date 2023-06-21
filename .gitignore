@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pypackages__/
+
+# Poetry files
+/dist/
+*.egg-info/
+/.venv/
