@@ -28,6 +28,11 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
     if destination not in codelist.columns:
         raise ValueError(f"destination {destination} not found in the code list.")
 
+    valid = ["cctld", "country.name", "country.name.de", "country.name.fr", "country.name.it", "cowc", "cown", "dhs", "ecb", "eurostat", "fao", "fips", "gaul", "genc2c", "genc3c", "genc3n", "gwc", "gwn", "imf", "ioc", "iso2c", "iso3c", "iso3n", "p5c", "p5n", "p4c", "p4n", "un", "un_m49", "unicode.symbol", "unhcr", "unpd", "vdem", "wb", "wb_api2c", "wb_api3c", "wvs", "country.name.en.regex", "country.name.de.regex", "country.name.fr.regex", "country.name.it.regex"]
+    valid.sort()
+    if origin not in valid:
+        raise ValueError("origin must be one of: " + ", ".join(valid))
+
     # we want to operate on polars Series, but allow and return single values
     if isinstance(sourcevar, str) | isinstance(sourcevar, int):
         sourcevar_series = pl.Series([sourcevar])
@@ -38,7 +43,7 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
     else:
         raise ValueError(f"sourcevar must be a string, list, or polars series. Got {type(sourcevar)}")
 
-    # convesion
+    # conversion
     if origin in ['country.name.en.regex', 'country.name.fr.regex', 'country.name.de.regex', 'country.name.it.regex']:
         out = replace_regex(sourcevar_series, origin, destination)
     else:
@@ -49,6 +54,8 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
         return out[0]
     elif isinstance(sourcevar, list) & isinstance(out, pl.series.series.Series):
         return out.to_list()
+    elif isinstance(out, list) & isinstance(sourcevar, pl.series.series.Series):
+        return pl.Series(out)
     else:
         return out
 
@@ -68,9 +75,10 @@ def replace_exact(sourcevar, origin, destination):
 
 
 def replace_regex(sourcevar, origin, destination):
-    result = []
+    sourcevar_unique = sourcevar.unique()
     mapping = dict(zip(codelist[origin], codelist[destination]))
-    for string in sourcevar:
+    result = []
+    for string in sourcevar_unique:
         match_found = False
         for regex in mapping.keys():
             if re.match(regex, string, flags = re.IGNORECASE):
@@ -79,4 +87,6 @@ def replace_regex(sourcevar, origin, destination):
                 break
         if not match_found:
             result.append(None)
-    return result
+    mapping2 = dict(zip(sourcevar_unique, result))
+    out = sourcevar.map_dict(mapping2)
+    return out
