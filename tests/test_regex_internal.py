@@ -1,6 +1,6 @@
 import pytest
 import polars as pl
-from countrycode.countrycode import *
+from countrycode import *
 
 # Test all country names with iso3c codes are matched exactly once
 def test_iso3c_match():

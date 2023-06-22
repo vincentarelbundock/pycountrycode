@@ -1,5 +1,5 @@
 import pytest
-from countrycode.countrycode import countrycode
+from countrycode import countrycode
 
 def test_basic_conversions():
     def name_of(iso3c_code):

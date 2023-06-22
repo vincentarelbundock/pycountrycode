@@ -1,5 +1,5 @@
 import pytest
-from countrycode.countrycode import countrycode
+from countrycode import countrycode
 
 
 def test_corner_cases_issue_299():
