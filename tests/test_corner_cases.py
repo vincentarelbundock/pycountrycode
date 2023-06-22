@@ -31,26 +31,26 @@ def test_corner_cases_viet_nam_variations():
 
 
 def test_corner_cases_bangladesh():
-    # assert countrycode("Bangladesh", "country.name.de", "iso3c") == "BGD"
-    # assert countrycode("Bangladesch", "country.name.de", "iso3c") == "BGD"
+    assert countrycode("Bangladesh", "country.name.de", "iso3c") == "BGD"
+    assert countrycode("Bangladesch", "country.name.de", "iso3c") == "BGD"
     assert True
 
 
 def test_corner_cases_netherlands():
-    # assert countrycode("Holland", "country.name", "country.name") == "Netherlands"
-    # assert countrycode("Hollande", "country.name.fr", "country.name") == "Netherlands"
-    # assert countrycode("Niederländische Antillen", "country.name.de", "country.name.en") == "Netherlands Antilles"
-    # assert countrycode("Karibische Niederlande", "country.name.de", "country.name.en") == "Caribbean Netherlands"
-    # assert countrycode("Caraibi olandesi", "country.name.it", "country.name.en") == "Caribbean Netherlands"
+    assert countrycode("Holland", "country.name", "country.name") == "Netherlands"
+    assert countrycode("Hollande", "country.name.fr", "country.name") == "Netherlands"
+    assert countrycode("Niederländische Antillen", "country.name.de", "country.name.en") == "Netherlands Antilles"
+    assert countrycode("Karibische Niederlande", "country.name.de", "country.name.en") == "Caribbean Netherlands"
+    assert countrycode("Caraibi olandesi", "country.name.it", "country.name.en") == "Caribbean Netherlands"
     assert True
 
 
 def test_corner_cases_macedonia():
     assert countrycode("Macédoine du Nord", "country.name.fr", "country.name.en") == "North Macedonia"
-    # assert countrycode("FYROM", "country.name.fr", "country.name.en") == "North Macedonia"
+    assert countrycode("FYROM", "country.name.fr", "country.name.en") == "North Macedonia"
 
 
 def test_corner_cases_misc():
-    # assert countrycode("Sint Maarten", "country.name.de", "iso3c") == "SXM"
+    assert countrycode("Sint Maarten", "country.name.de", "iso3c") == "SXM"
     assert countrycode("Aruba", "country.name.de", "iso3c") == "ABW"
     assert countrycode("Curaçao", "country.name.de", "iso3c") == "CUW"

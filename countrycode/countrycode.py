@@ -86,7 +86,7 @@ def replace_regex(sourcevar, origin, destination):
     for string in sourcevar_unique:
         match_found = False
         for position, regex in enumerate(o):
-            if re.match(regex, string):
+            if re.search(regex, string):
                 result.append(d[position])
                 match_found = True
                 break
