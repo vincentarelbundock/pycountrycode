@@ -1,4 +1,9 @@
-# Python countrycode
+# `countrycode` for Python
+
+Warning: This is *alpha* software.
+
+`countrycode` standardizes country names, converts them into ~40
+different coding schemes, and assigns region descriptors.
 
 Convert country names to and from 9 country code schemes.
 
@@ -7,22 +12,66 @@ Convert country names to and from 9 country code schemes.
 - Pypi: [](https://pypi.python.org/pypi/countrycode)
 - [Vincent’s webpage](https://arelbundock.com)
 
-A Python port of the `countrycode` package for R:
+This is a Python port of [the `countrycode` package for
+R.](https://vincentarelbundock.github.io/countrycode)
 
-- `countrycode @ Github <http://github.com/vincentarelbundock/countrycode>`\_
-- `countrycode @ CRAN <http://cran.r-project.org/web/packages/countrycode/index.html>`\_
+## The Problem
 
-This is *beta* software.
+Different data sources use different coding schemes to represent
+countries (e.g. CoW or ISO). This poses two main problems: (1) some of
+these coding schemes are less than intuitive, and (2) merging these data
+requires converting from one coding scheme to another, or from long
+country names to a coding scheme.
+
+## The Solution
+
+The `countrycode` function can convert to and from 40+ different country
+coding schemes, and to 600+ variants of country names in different
+languages and formats. It uses regular expressions to convert long
+country names (e.g. Sri Lanka) into any of those coding schemes or
+country names. It can create new variables with various regional
+groupings.
+
+## Supported codes
+
+To get an up-to-date list of supported country codes, install the
+package and type `?codelist`. These include:
+
+- 600+ variants of country names in different languages and formats.
+- AR5
+- Continent and region identifiers.
+- Correlates of War (numeric and character)
+- European Central Bank
+- [EUROCONTROL](https://www.eurocontrol.int) - The European Organisation
+  for the Safety of Air Navigation
+- Eurostat
+- Federal Information Processing Standard (FIPS)
+- Food and Agriculture Organization of the United Nations
+- Global Administrative Unit Layers (GAUL)
+- Geopolitical Entities, Names and Codes (GENC)
+- Gleditsch & Ward (numeric and character)
+- International Civil Aviation Organization
+- International Monetary Fund
+- International Olympic Committee
+- ISO (2/3-character and numeric)
+- Polity IV
+- United Nations
+- United Nations Procurement Division
+- Varieties of Democracy
+- World Bank
+- World Values Survey
+- Unicode symbols (flags)
+- And more…
 
 # Installation
 
-Using pip
+From `pypi`:
 
 ``` python
-sudo pip install countrycode
+pip install countrycode
 ```
 
-Latest version from Gitub
+Latest version from Gitub:
 
 ``` {sh}
 #| eval: false
@@ -34,8 +83,16 @@ pip install .
 # Usage
 
 ``` python
+import polars as pl
 from countrycode import countrycode
-countrycode(['Algeria', 'United States'], origin='country.name', destination='iso3c')
+
+countrycode(['canada', 'United States', 'alGeria'], origin = "country.name.en.regex", destination = "iso3c")
+countrycode(pl.Series(['DZA', 'CAN', 'USA']), origin = "iso3c", destination = "cldr.short.fr")
+countrycode(['DZA', 'CAN', 'USA'], origin = "iso3c", destination = "iso3n")
+countrycode([12, 124], origin = "iso3n", destination = "cldr.short.fr")
+countrycode(12, origin = "iso3n", destination = "cldr.short.de") 
+countrycode(["Democratic Republic of Vietnam", "Algeria"], origin = "country.name.en.regex", destination = "iso3c")
+countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
 ```
 
-    ['DZA', 'USA']
+    ['DZA']
