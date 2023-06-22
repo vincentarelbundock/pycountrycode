@@ -26,7 +26,7 @@ The `countrycode` function can convert to and from 40+ different country coding 
 
 ## Supported codes
 
-To get an up-to-date list of supported country codes, install the package and type `?codelist`. These include:
+See the section at the very end of this README for a full list of supported codes and languages. These include:
 
 * 600+ variants of country names in different languages and formats.
 * AR5
@@ -94,4 +94,11 @@ countrycode(["Democratic Republic of Vietnam", "Algeria"], origin = "country.nam
 ```
 ```{python}
 countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
+```
+
+# Supported codes: Full list 
+
+```{python}
+from countrycode import codelist
+", ".join(codelist.columns)
 ```

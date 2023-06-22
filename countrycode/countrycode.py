@@ -1,9 +1,3 @@
-# TODO: sanitize input
-# white space only if string
-# sourcevar = [str(x).strip() for x in sourcevar]
-# round numeric if
-# sourcevar = [f"{x:.0f}" for x in sourcevar]
-
 import re
 import os
 import polars as pl
@@ -13,7 +7,42 @@ pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 codelist = pl.read_csv(data_path)
 
+
 def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en'):
+    """
+    Convert country codes or names from one format to another.
+
+    This function takes a list, string, or Polars Series of country codes or names, and converts them to the desired
+    format, such as ISO 3-letter codes, country names in different languages, etc.
+
+    Parameters:
+    sourcevar (list, str, or polars.series.series.Series, optional):
+        A list, string, or Polars Series of country codes or names to be converted. Default is ['DZA', 'CAN'].
+    origin (str, optional):
+        The format of the input country codes or names. Default is 'iso3c'.
+    destination (str, optional):
+        The desired format of the output country codes or names. Default is 'country.name.en'.
+
+    Returns:
+    list, str, or polars.series.series.Series:
+        The converted country codes or names in the desired format. The output type depends on the input type:
+        - If `sourcevar` is a string or int, returns a string.
+        - If `sourcevar` is a list, returns a list.
+        - If `sourcevar` is a Polars Series, returns a Polars Series.
+
+    Raises:
+    ValueError:
+        If the `origin` or `destination` format is not one of the supported formats.
+        If the input `sourcevar` is not a string, list, or Polars Series.
+
+    Example:
+    >>> countrycode(['DZA', 'CAN'], origin='iso3c', destination='country.name.en')
+    ['Algeria', 'Canada']
+
+    Note:
+    This function uses two helper functions (`replace_regex` and `replace_exact`) to perform the actual conversion.
+    """
+
     # user convenience shortcuts
     if origin == "country.name":
         origin = "country.name.en.regex"
