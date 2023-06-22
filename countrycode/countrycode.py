@@ -11,18 +11,21 @@ from copy import copy
 
 pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
-data = pl.read_csv(data_path)
+codelist = pl.read_csv(data_path)
 
 def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en'):
     # user convenience shortcut
     if origin == "country.name":
         origin = "country.name.en.regex"
 
+    if destination == "country.name":
+        destination = "country.name.en"
+
     # sanity checks
-    if origin not in data.columns:
+    if origin not in codelist.columns:
         raise ValueError(f"origin {origin} not found in the code list.")
 
-    if destination not in data.columns:
+    if destination not in codelist.columns:
         raise ValueError(f"destination {destination} not found in the code list.")
 
     # we want to operate on polars Series, but allow and return single values
@@ -59,14 +62,14 @@ def get_first_match(pattern, string_list):
 
 
 def replace_exact(sourcevar, origin, destination):
-    mapping = dict(zip(data[origin], data[destination]))
+    mapping = dict(zip(codelist[origin], codelist[destination]))
     out = sourcevar.map_dict(mapping)
     return out
 
 
 def replace_regex(sourcevar, origin, destination):
     result = []
-    mapping = dict(zip(data[origin], data[destination]))
+    mapping = dict(zip(codelist[origin], codelist[destination]))
     for string in sourcevar:
         match_found = False
         for regex in mapping.keys():
