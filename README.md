@@ -8,8 +8,8 @@ different coding schemes, and assigns region descriptors.
 Convert country names to and from 9 country code schemes.
 
 - Bugs & Development:
-  [](https://github.com/vincentarelbundock/pycountrycode)
-- Pypi: [](https://pypi.python.org/pypi/countrycode)
+  https://github.com/vincentarelbundock/pycountrycode
+- Pypi: https://pypi.python.org/pypi/countrycode
 - [Vincent’s webpage](https://arelbundock.com)
 
 This is a Python port of [the `countrycode` package for
@@ -73,8 +73,7 @@ pip install countrycode
 
 Latest version from Gitub:
 
-``` {sh}
-#| eval: false
+``` sh
 git clone https://github.com/vincentarelbundock/pycountrycode
 cd pycountrycode
 pip install .
@@ -86,12 +85,57 @@ pip install .
 import polars as pl
 from countrycode import countrycode
 
-countrycode(['canada', 'United States', 'alGeria'], origin = "country.name.en.regex", destination = "iso3c")
-countrycode(pl.Series(['DZA', 'CAN', 'USA']), origin = "iso3c", destination = "cldr.short.fr")
-countrycode(['DZA', 'CAN', 'USA'], origin = "iso3c", destination = "iso3n")
 countrycode([12, 124], origin = "iso3n", destination = "cldr.short.fr")
+```
+
+    ['Algérie', 'Canada']
+
+``` python
+countrycode(['canada', 'United States', 'alGeria'], origin = "country.name.en.regex", destination = "iso3c")
+```
+
+    ['CAN', 'USA', 'DZA']
+
+``` python
+countrycode(pl.Series(['DZA', 'CAN', 'USA']), origin = "iso3c", destination = "cldr.short.fr")
+```
+
+<div><style>
+.dataframe > thead > tr > th,
+.dataframe > tbody > tr > td {
+  text-align: right;
+}
+</style>
+<small>shape: (3,)</small>
+
+|           |
+|-----------|
+| str       |
+| "Algérie" |
+| "Canada"  |
+| "É.-U."   |
+
+</div>
+
+``` python
+countrycode(['DZA', 'CAN', 'USA'], origin = "iso3c", destination = "iso3n")
+```
+
+    [12, 124, 840]
+
+``` python
 countrycode(12, origin = "iso3n", destination = "cldr.short.de") 
+```
+
+    'Algerien'
+
+``` python
 countrycode(["Democratic Republic of Vietnam", "Algeria"], origin = "country.name.en.regex", destination = "iso3c")
+```
+
+    ['VNM', 'DZA']
+
+``` python
 countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
 ```
 
