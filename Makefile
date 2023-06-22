@@ -1,4 +1,4 @@
-.PHONY: readme test help
+.PHONY: readme test help install
 
 help:  ## Display this help screen
 	@echo -e "\033[1mAvailable commands:\033[0m\n"
@@ -9,3 +9,6 @@ test: ## run pytest suite
 
 readme: ## render Quarto readme
 	poetry run quarto render README.qmd
+
+install: ## install in poetry venv
+	poetry install
