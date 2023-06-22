@@ -3,9 +3,9 @@
 Convert country names to and from 9 country code schemes.
 
 - Bugs & Development:
-  https://github.com/vincentarelbundock/pycountrycode
-- Pypi: https://pypi.python.org/pypi/countrycode
-- `Vincent's webpage <http://umich.edu/~varel>`\_
+  [](https://github.com/vincentarelbundock/pycountrycode)
+- Pypi: [](https://pypi.python.org/pypi/countrycode)
+- [Vincent’s webpage](https://arelbundock.com)
 
 A Python port of the `countrycode` package for R:
 
