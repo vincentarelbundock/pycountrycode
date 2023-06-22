@@ -14,9 +14,12 @@ data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 codelist = pl.read_csv(data_path)
 
 def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en'):
-    # user convenience shortcut
+    # user convenience shortcuts
     if origin == "country.name":
         origin = "country.name.en.regex"
+
+    if origin in ['country.name.en', 'country.name.fr', 'country.name.de', 'country.name.it']:
+        origin = origin + ".regex"
 
     if destination == "country.name":
         destination = "country.name.en"
@@ -29,7 +32,6 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
         raise ValueError(f"destination {destination} not found in the code list.")
 
     valid = ["cctld", "country.name", "country.name.de", "country.name.fr", "country.name.it", "cowc", "cown", "dhs", "ecb", "eurostat", "fao", "fips", "gaul", "genc2c", "genc3c", "genc3n", "gwc", "gwn", "imf", "ioc", "iso2c", "iso3c", "iso3n", "p5c", "p5n", "p4c", "p4n", "un", "un_m49", "unicode.symbol", "unhcr", "unpd", "vdem", "wb", "wb_api2c", "wb_api3c", "wvs", "country.name.en.regex", "country.name.de.regex", "country.name.fr.regex", "country.name.it.regex"]
-    valid.sort()
     if origin not in valid:
         raise ValueError("origin must be one of: " + ", ".join(valid))
 
@@ -69,24 +71,27 @@ def get_first_match(pattern, string_list):
 
 
 def replace_exact(sourcevar, origin, destination):
-    mapping = dict(zip(codelist[origin], codelist[destination]))
+    codelist_nonull = codelist[[origin, destination]].drop_nulls()
+    mapping = dict(zip(codelist_nonull[origin], codelist_nonull[destination]))
     out = sourcevar.map_dict(mapping)
     return out
 
 
 def replace_regex(sourcevar, origin, destination):
     sourcevar_unique = sourcevar.unique()
-    mapping = dict(zip(codelist[origin], codelist[destination]))
+    codelist_nonull = codelist[[origin, destination]].drop_nulls()
+    o = [re.compile(x, flags = re.IGNORECASE) for x in codelist_nonull[origin]]
+    d = codelist_nonull[destination]
     result = []
     for string in sourcevar_unique:
         match_found = False
-        for regex in mapping.keys():
-            if re.match(regex, string, flags = re.IGNORECASE):
-                result.append(mapping[regex])
+        for position, regex in enumerate(o):
+            if re.match(regex, string):
+                result.append(d[position])
                 match_found = True
                 break
         if not match_found:
             result.append(None)
-    mapping2 = dict(zip(sourcevar_unique, result))
-    out = sourcevar.map_dict(mapping2)
+    mapping = dict(zip(sourcevar_unique, result))
+    out = sourcevar.map_dict(mapping)
     return out
