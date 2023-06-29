@@ -1,2 +1,1 @@
-from .countrycode import countrycode
-from .countrycode import codelist
+from .countrycode import codelist, countrycode

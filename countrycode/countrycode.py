@@ -1,5 +1,6 @@
-import re
 import os
+import re
+
 import polars as pl
 
 pkg_dir, pkg_filename = os.path.split(__file__)
