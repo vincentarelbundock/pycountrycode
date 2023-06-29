@@ -1,0 +1,12 @@
+name: CI Linting & Testing
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  linting:
+    uses: ./.github/workflows/lint.yml
+  testing:
+    uses: ./.github/workflows/test.yml
+    needs: linting
