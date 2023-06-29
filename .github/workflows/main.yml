@@ -1,4 +1,4 @@
-name: CI Linting & Testing
+name: CI
 
 on:
   pull_request:
