@@ -1,14 +1,14 @@
-import re
 import os
+import re
+
 import polars as pl
-from copy import copy
 
 pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 codelist = pl.read_csv(data_path)
 
 
-def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.name.en'):
+def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.name.en"):
     """
     Convert country codes or names from one format to another.
 
@@ -47,16 +47,58 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
     if origin == "country.name":
         origin = "country.name.en.regex"
 
-    if origin in ['country.name.en', 'country.name.fr', 'country.name.de', 'country.name.it']:
+    if origin in ["country.name.en", "country.name.fr", "country.name.de", "country.name.it"]:
         origin = origin + ".regex"
 
     if destination == "country.name":
         destination = "country.name.en"
 
     if destination not in codelist.columns:
-        raise ValueError(f"destination must be one of: " + ".join(codelist.columns)")
+        raise ValueError("destination must be one of: " + "".join(codelist.columns))
 
-    valid = ["cctld", "country.name", "country.name.de", "country.name.fr", "country.name.it", "cowc", "cown", "dhs", "ecb", "eurostat", "fao", "fips", "gaul", "genc2c", "genc3c", "genc3n", "gwc", "gwn", "imf", "ioc", "iso2c", "iso3c", "iso3n", "p5c", "p5n", "p4c", "p4n", "un", "un_m49", "unicode.symbol", "unhcr", "unpd", "vdem", "wb", "wb_api2c", "wb_api3c", "wvs", "country.name.en.regex", "country.name.de.regex", "country.name.fr.regex", "country.name.it.regex"]
+    valid = [
+        "cctld",
+        "country.name",
+        "country.name.de",
+        "country.name.fr",
+        "country.name.it",
+        "cowc",
+        "cown",
+        "dhs",
+        "ecb",
+        "eurostat",
+        "fao",
+        "fips",
+        "gaul",
+        "genc2c",
+        "genc3c",
+        "genc3n",
+        "gwc",
+        "gwn",
+        "imf",
+        "ioc",
+        "iso2c",
+        "iso3c",
+        "iso3n",
+        "p5c",
+        "p5n",
+        "p4c",
+        "p4n",
+        "un",
+        "un_m49",
+        "unicode.symbol",
+        "unhcr",
+        "unpd",
+        "vdem",
+        "wb",
+        "wb_api2c",
+        "wb_api3c",
+        "wvs",
+        "country.name.en.regex",
+        "country.name.de.regex",
+        "country.name.fr.regex",
+        "country.name.it.regex",
+    ]
     if origin not in valid:
         raise ValueError("origin must be one of: " + ", ".join(valid))
 
@@ -71,7 +113,12 @@ def countrycode(sourcevar=['DZA', 'CAN'], origin='iso3c', destination='country.n
         raise ValueError(f"sourcevar must be a string, list, or polars series. Got {type(sourcevar)}")
 
     # conversion
-    if origin in ['country.name.en.regex', 'country.name.fr.regex', 'country.name.de.regex', 'country.name.it.regex']:
+    if origin in [
+        "country.name.en.regex",
+        "country.name.fr.regex",
+        "country.name.de.regex",
+        "country.name.it.regex",
+    ]:
         out = replace_regex(sourcevar_series, origin, destination)
     else:
         out = replace_exact(sourcevar_series, origin, destination)
@@ -105,8 +152,8 @@ def replace_exact(sourcevar, origin, destination):
 def replace_regex(sourcevar, origin, destination):
     sourcevar_unique = sourcevar.unique()
     codelist_nonull = codelist[[origin, destination]].drop_nulls()
-    o = [re.compile(x, flags = re.IGNORECASE) for x in codelist_nonull[origin]]
-    d = codelist_nonull[destination]
+    o = [re.compile(x, flags=re.IGNORECASE) for x in codelist_nonull[origin]]  # noqa: E251
+    d = codelist_nonull[destination]  # noqa: E251
     result = []
     for string in sourcevar_unique:
         match_found = False
