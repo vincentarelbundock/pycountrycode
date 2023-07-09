@@ -9,3 +9,7 @@ __pypackages__/
 /dist/
 *.egg-info/
 /.venv/
+
+# Testing
+.hypothesis/
+.pytest_cache/
