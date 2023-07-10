@@ -1,9 +1,15 @@
-import pytest
-from countrycode import countrycode
+from hypothesis import given, example
+
+from countrycode import countrycode, codelist
+from custom_strategies import build_valid_code
+import polars as pl
 
 
-def test_numeric():
-    assert countrycode("CAN", "iso3c", "iso3n") == 124
+@given(build_valid_code("iso3c"))
+@example("CAN")
+def test_numeric(code_param):
+    expected = codelist.filter(pl.col("iso3c") == code_param).item(0, "iso3n")
+    assert countrycode(code_param, "iso3c", "iso3n") == expected
 
 
 def test_basic_conversions():
