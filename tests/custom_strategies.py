@@ -1,5 +1,5 @@
 import string
-from typing import Any, Optional
+from typing import Optional, TypeAlias, Union
 
 from hypothesis import strategies as st
 from hypothesis.strategies import SearchStrategy
@@ -22,7 +22,10 @@ def build_valid_code(code: str = "iso3c") -> SearchStrategy[str]:
     )
 
 
-def select_filtered_row(column: str, column_value: str, target_col="country.name.en") -> Optional[int | str]:
+RowValue: TypeAlias = Union[Optional[int], Optional[str]]
+
+
+def select_filtered_row(column: str, column_value: str, target_col="country.name.en") -> RowValue:
     """
     Function to return the following operation:
     codelist.filter(pl.col(column) == column_value).item(0, target_col)
