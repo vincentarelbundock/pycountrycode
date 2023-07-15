@@ -22,7 +22,7 @@ def build_valid_code(code: str = "iso3c") -> SearchStrategy[str]:
     )
 
 
-def select_filtered_row(column: str, column_value: str, target_col="country.name.en") -> Optional[int] | Optional[str]:
+def select_filtered_row(column: str, column_value: str, target_col="country.name.en") -> Optional[int | str]:
     """
     Function to return the following operation:
     codelist.filter(pl.col(column) == column_value).item(0, target_col)
