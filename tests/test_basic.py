@@ -4,6 +4,10 @@ from countrycode import countrycode
 from custom_strategies import build_valid_code, select_filtered_row
 
 
+"""
+Test to check that finding the iso3n representation of an iso3c row is
+equivalent to finding the corresponding cell in the countrycode dataframe.
+"""
 @given(code_param=build_valid_code("iso3c"))
 @example(code_param="CAN")
 def test_numeric(code_param):
