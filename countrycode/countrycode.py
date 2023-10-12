@@ -1,11 +1,22 @@
 import os
 import re
+import csv
 
-import polars as pl
+try:
+    import polars as pl
+except ImportError:
+    pl = None
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 
 pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
-codelist = pl.read_csv(data_path)
+
+with open(data_path) as f:
+    rows = csv.reader(f)
+    codelist = {col[0]: list(col[1:]) for col in zip(*rows)}
 
 
 def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.name.en"):
@@ -53,7 +64,7 @@ def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.n
     if destination == "country.name":
         destination = "country.name.en"
 
-    if destination not in codelist.columns:
+    if destination not in codelist.keys():
         raise ValueError("destination must be one of: " + "".join(codelist.columns))
 
     valid = [
@@ -102,15 +113,15 @@ def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.n
     if origin not in valid:
         raise ValueError("origin must be one of: " + ", ".join(valid))
 
-    # we want to operate on polars Series, but allow and return single values
-    if isinstance(sourcevar, str) | isinstance(sourcevar, int):
-        sourcevar_series = pl.Series([sourcevar])
-    elif isinstance(sourcevar, list):
-        sourcevar_series = pl.Series(sourcevar)
-    elif isinstance(sourcevar, pl.series.series.Series):
-        sourcevar_series = sourcevar
-    else:
-        raise ValueError(f"sourcevar must be a string, list, or polars series. Got {type(sourcevar)}")
+    sourcevar_series = sourcevar
+    if pl:
+        if isinstance(sourcevar, pl.series.series.Series):
+            sourcevar_series = sourcevar.to_list()
+    if pd:
+        if isinstance(sourcevar, pd.Series):
+            sourcevar_series = sourcevar.to_list()
+    if isinstance(sourcevar, str):
+        sourcevar_series = [sourcevar]
 
     # conversion
     if origin in [
@@ -126,10 +137,10 @@ def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.n
     # output type
     if isinstance(sourcevar, str) | isinstance(sourcevar, int):
         return out[0]
-    elif isinstance(sourcevar, list) & isinstance(out, pl.series.series.Series):
-        return out.to_list()
-    elif isinstance(out, list) & isinstance(sourcevar, pl.series.series.Series):
+    elif pl and isinstance(sourcevar, pl.series.series.Series):
         return pl.Series(out)
+    elif pd and isinstance(sourcevar, pd.Series):
+        return pd.Series(out)
     else:
         return out
 
@@ -143,17 +154,34 @@ def get_first_match(pattern, string_list):
 
 
 def replace_exact(sourcevar, origin, destination):
-    codelist_nonull = codelist[[origin, destination]].drop_nulls()
-    mapping = dict(zip(codelist_nonull[origin], codelist_nonull[destination]))
-    out = sourcevar.map_dict(mapping)
+    out = []
+    for string in sourcevar:
+        match_found = False
+        for position, origin_i in enumerate(codelist[origin]):
+            if origin_i == '' or codelist[destination][position] == '':
+                continue
+            if string == origin_i:
+                if codelist[destination][position].isdigit():
+                    out.append(int(codelist[destination][position]))
+                else:
+                    out.append(codelist[destination][position])
+                match_found = True
+                break
+        if not match_found:
+            out.append(None)
     return out
 
 
+
 def replace_regex(sourcevar, origin, destination):
-    sourcevar_unique = sourcevar.unique()
-    codelist_nonull = codelist[[origin, destination]].drop_nulls()
-    o = [re.compile(x, flags=re.IGNORECASE) for x in codelist_nonull[origin]]  # noqa: E251
-    d = codelist_nonull[destination]  # noqa: E251
+    sourcevar_unique = list(set(sourcevar))
+    o = []
+    d = []
+    for i, (val_origin, val_destination) in enumerate(zip(codelist[origin], codelist[destination])):
+        if val_origin != '' and val_destination != '':
+            o.append(re.compile(val_origin, flags=re.IGNORECASE))
+            d.append(val_destination)
+
     result = []
     for string in sourcevar_unique:
         match_found = False
@@ -165,5 +193,5 @@ def replace_regex(sourcevar, origin, destination):
         if not match_found:
             result.append(None)
     mapping = dict(zip(sourcevar_unique, result))
-    out = sourcevar.map_dict(mapping)
+    out = [int(mapping[i]) if mapping[i] and mapping[i].isdigit() else mapping[i] for i in sourcevar]
     return out
