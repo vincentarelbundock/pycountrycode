@@ -4,9 +4,6 @@ import polars as pl
 from countrycode import *
 codelist = pl.read_csv("countrycode/data/codelist.csv")
 
-def test_perso():
-    print(countrycode('', "iso3c", "iso3n"))
-
 # Test all country names with iso3c codes are matched exactly once
 def test_iso3c_match():
     name = codelist.filter(pl.col("iso3c").is_not_null())
@@ -50,8 +47,4 @@ def test_french_regex():
     tmp = tmp.with_columns(
         test = countrycode(tmp["country.name.fr"], origin="country.name.fr", destination="cldr.short.fr")
     )
-
-    pl.Config().set_tbl_rows(-1)
-    print(tmp[["test", "cldr.short.fr"]])
-
     assert (tmp["test"] != tmp["cldr.short.fr"]).any() == False
