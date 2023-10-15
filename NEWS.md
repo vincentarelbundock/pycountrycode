@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+* Drop `polars` and `pandas` dependencies.
+
+## 0.3.0
+
 10 years later! (June 2023)
 
 A new version of `countrycode` for Python using the latest conversion dictionary supplied by the `countrycode` package for R.
