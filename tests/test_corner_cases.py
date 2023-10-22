@@ -1,4 +1,3 @@
-import pytest
 from countrycode import countrycode
 
 

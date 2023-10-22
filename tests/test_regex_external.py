@@ -1,14 +1,14 @@
-import pytest
 from countrycode import countrycode
 
-def iso3c_of(name): 
-    out = countrycode(sourcevar = name, origin = 'country.name', destination = 'iso3c')
+
+def iso3c_of(name):
+    out = countrycode(sourcevar=name, origin='country.name', destination='iso3c')
     if out is None:
         out = ""
     return out
 
-def test_known_variants():
 
+def test_known_variants():
     assert iso3c_of('Aruba') == 'ABW'
     assert iso3c_of('Afghanistan') == 'AFG'
     assert iso3c_of('Angola') == 'AGO'
