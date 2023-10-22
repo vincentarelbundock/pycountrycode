@@ -14,12 +14,13 @@ except ImportError:
     _has_polars = False
     from custom_strategies import codelist
 
+if not _has_polars:
+    pytest.skip("Skipping tests that use pytest", allow_module_level = True)
+
 _regex_internal_skip_reason = "Test requires polars installation"
 
 
 # Test all country names with iso3c codes are matched exactly once
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_iso3c_match():
     name = codelist.filter(pl.col("iso3c").is_not_null())
     iso3c_from_name = countrycode(name["country.name.en"], origin='country.name', destination="iso3c")
@@ -27,8 +28,6 @@ def test_iso3c_match():
 
 
 # Test iso3c-to-country.name-to-iso3c is internally consistent
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_iso3c_consistency():
     tmp = codelist.filter(pl.col("iso3c").is_not_null())
     a = countrycode(tmp["iso3c"], origin='iso3c', destination="country.name")
@@ -37,8 +36,6 @@ def test_iso3c_consistency():
 
 
 # Test English regex vs. cldr.short.
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_english_regex():
     tmp = codelist.filter(pl.col("country.name.en").is_not_null())
     tmp = tmp.with_columns(
@@ -48,8 +45,6 @@ def test_english_regex():
 
 
 # Test Italian regex vs. cldr.short.it
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_italian_regex():
     tmp = codelist.filter(pl.col("country.name.it").is_not_null())
     tmp = tmp.with_columns(
@@ -59,8 +54,6 @@ def test_italian_regex():
 
 
 # Test German regex vs. cldr.short.de
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_german_regex():
     tmp = codelist.filter(pl.col("country.name.de").is_not_null())
     tmp = tmp.with_columns(
@@ -70,8 +63,6 @@ def test_german_regex():
 
 
 # Test French regex vs. cldr.short.fr
-@pytest.mark.skipif(not _has_polars,
-                    reason=_regex_internal_skip_reason)
 def test_french_regex():
     tmp = codelist.filter(pl.col("country.name.fr").is_not_null())
     tmp = tmp.with_columns(
