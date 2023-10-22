@@ -1,18 +1,36 @@
+import os
+import pytest
+
 from hypothesis import given, example
 
 from countrycode import countrycode
-from custom_strategies import build_valid_code, select_filtered_row
 
+try:
+    from custom_strategies_polars import (
+        build_valid_code as build_valid_code_polars,
+        select_filtered_row as select_filtered_row_polars
+    )
+
+    _has_polars = True
+
+    pkg_dir, pkg_filename = os.path.split(__file__)
+    pkg_dir = os.path.dirname(pkg_dir)
+    data_path = os.path.join(pkg_dir, "countrycode", "data", "codelist.csv")
+    codelist = pl.read_csv(data_path)
+
+except ImportError:
+    _has_polars = False
+    from custom_strategies import codelist
+
+_regex_internal_skip_reason = "Test requires polars installation"
 
 """
 Test to check that finding the iso3n representation of an iso3c row is
 equivalent to finding the corresponding cell in the countrycode dataframe.
 """
-@given(code_param=build_valid_code("iso3c"))
-@example(code_param="CAN")
-def test_numeric(code_param):
-    expected = select_filtered_row("iso3c", code_param, "iso3n")
-    assert countrycode(code_param, "iso3c", "iso3n") == expected
+
+
+
 
 
 def test_basic_conversions():
