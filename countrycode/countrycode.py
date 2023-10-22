@@ -1,6 +1,6 @@
+import csv
 import os
 import re
-import csv
 
 try:
     import polars as pl
