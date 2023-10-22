@@ -12,7 +12,7 @@ try:
     data_path = os.path.join(pkg_dir, "countrycode", "data", "codelist.csv")
     codelist = pl.read_csv(data_path)
 except ImportError:
-    codelist = None
+    pass
 
 def _select_codes(code="iso3c") -> list:
     return codelist.get_column(code).drop_nulls().to_list()
