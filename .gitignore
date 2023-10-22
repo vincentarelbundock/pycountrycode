@@ -13,3 +13,9 @@ __pypackages__/
 # Testing
 .hypothesis/
 .pytest_cache/
+
+## Ignore hypothesis data
+.hypothesis
+
+ ## ignore caching from tests
+.pytest_cache
