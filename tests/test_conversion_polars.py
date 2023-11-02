@@ -13,9 +13,9 @@ except ImportError:
 _regex_internal_skip_reason = "Test requires polars installation"
 
 if not _has_polars:
-    pytest.skip("Skipping tests that use pytest", allow_module_level=True)
+    pytest.skip(_regex_internal_skip_reason, allow_module_level=True)
 
-from custom_strategies import build_invalid_code, build_valid_code, select_filtered_row
+from custom_strategies_polars import build_invalid_code, build_valid_code, select_filtered_row
 
 @given(code_param=build_valid_code("iso3c"))
 @example(code_param="CAN")
