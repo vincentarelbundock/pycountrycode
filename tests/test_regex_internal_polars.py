@@ -4,6 +4,7 @@ from countrycode import countrycode
 
 try:
     import polars as pl
+
     _has_polars = True
 
     pkg_dir, pkg_filename = os.path.split(__file__)
@@ -12,12 +13,11 @@ try:
     codelist = pl.read_csv(data_path)
 except ImportError:
     _has_polars = False
-    from custom_strategies import codelist
-
-if not _has_polars:
-    pytest.skip("Skipping tests that use pytest", allow_module_level = True)
 
 _regex_internal_skip_reason = "Test requires polars installation"
+
+if not _has_polars:
+    pytest.skip(_regex_internal_skip_reason, allow_module_level=True)
 
 
 # Test all country names with iso3c codes are matched exactly once
