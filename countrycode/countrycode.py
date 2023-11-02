@@ -1,6 +1,6 @@
+import csv
 import os
 import re
-import csv
 
 try:
     import polars as pl
@@ -158,7 +158,7 @@ def replace_exact(sourcevar, origin, destination):
     for string in sourcevar:
         match_found = False
         for position, origin_i in enumerate(codelist[origin]):
-            if origin_i == '' or codelist[destination][position] == '':
+            if origin_i == "" or codelist[destination][position] == "":
                 continue
             if string == origin_i:
                 if codelist[destination][position].isdigit():
@@ -172,13 +172,12 @@ def replace_exact(sourcevar, origin, destination):
     return out
 
 
-
 def replace_regex(sourcevar, origin, destination):
     sourcevar_unique = list(set(sourcevar))
     o = []
     d = []
     for i, (val_origin, val_destination) in enumerate(zip(codelist[origin], codelist[destination])):
-        if val_origin != '' and val_destination != '':
+        if val_origin != "" and val_destination != "":
             o.append(re.compile(val_origin, flags=re.IGNORECASE))
             d.append(val_destination)
 

@@ -1,7 +1,28 @@
+import pytest
 from hypothesis import given, example
 
 from countrycode import countrycode
-from custom_strategies import build_invalid_code, build_valid_code, select_filtered_row
+
+try:
+    import polars as pl
+
+    _has_polars = True
+except ImportError:
+    _has_polars = False
+
+_regex_internal_skip_reason = "Test requires polars installation"
+
+if not _has_polars:
+    pytest.skip(_regex_internal_skip_reason, allow_module_level=True)
+
+from custom_strategies_polars import build_invalid_code, build_valid_code, select_filtered_row
+
+@given(code_param=build_valid_code("iso3c"))
+@example(code_param="CAN")
+def test_numeric(code_param):
+    expected = select_filtered_row("iso3c", code_param, "iso3n")
+    assert countrycode(code_param, "iso3c", "iso3n") == expected
+
 
 """
 Test to check that finding the country.name representation of an iso3c row is
