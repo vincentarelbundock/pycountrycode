@@ -14,7 +14,7 @@ except ImportError:
 pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 
-with open(data_path) as f:
+with open(data_path, encoding='utf-8') as f:
     rows = csv.reader(f)
     codelist = {col[0]: list(col[1:]) for col in zip(*rows)}
 
