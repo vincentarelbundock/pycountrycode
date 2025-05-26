@@ -24,10 +24,6 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      - name: Run tests
-        run: |
-          uv run --all-extras pytest
-
       - name: Check
         run: |
           uv run --all-extras ruff check countrycode tests
