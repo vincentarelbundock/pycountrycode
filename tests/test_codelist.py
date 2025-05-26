@@ -4,6 +4,7 @@ import pytest
 
 try:
     import polars as pl
+
     _has_polars = True
 
     pkg_dir, pkg_filename = os.path.split(__file__)
@@ -14,6 +15,7 @@ except ImportError:
     _has_polars = False
     from custom_strategies import codelist
 
+
 @pytest.mark.skipif(not _has_polars, reason=".Shape method assumes polars installation")
 def test_codelist_dimensions_polars():
     """
@@ -21,7 +23,10 @@ def test_codelist_dimensions_polars():
     """
     assert codelist.shape == (291, 624)
 
-@pytest.mark.skipif(_has_polars, reason="Test assumed dictionary representation of codelist")
+
+@pytest.mark.skipif(
+    _has_polars, reason="Test assumed dictionary representation of codelist"
+)
 def test_codelist():
     assert len(codelist.keys()) == 624
     assert all(len(codelist.get(key)) == 291 for key in codelist.keys())

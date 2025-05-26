@@ -30,6 +30,7 @@ def empty_string_to_null(s: str) -> Optional[str]:
         return None
     return s
 
+
 def _select_codes(code: str = "iso3c") -> list:
     """
     Select all distinct values for a given column `code` from codelist
@@ -46,13 +47,12 @@ def build_valid_code(code: str = "iso3c") -> SearchStrategy[str]:
     """
     Builder function that returns a strategy to pick one of a valid 'code'.
     """
-    return st.sampled_from(
-        _select_codes(code)
-    )
+    return st.sampled_from(_select_codes(code))
 
 
-def select_filtered_row(input_column: str, column_value: str, target_col="country.name.en") -> Union[
-    Optional[int], Optional[str]]:
+def select_filtered_row(
+    input_column: str, column_value: str, target_col="country.name.en"
+) -> Union[Optional[int], Optional[str]]:
     """
     Function to return the `target_col` row that matches the `column_value` value of `column`
     Assuming `codelist` is from the `polars` package:
@@ -72,4 +72,6 @@ def build_invalid_code(code="iso3c") -> SearchStrategy[str]:
     """
     Returns a string that is not represented in code within codelist
     """
-    return st.text(alphabet=string.printable, min_size=1, max_size=10).filter(lambda z: z not in _select_codes(code))
+    return st.text(alphabet=string.printable, min_size=1, max_size=10).filter(
+        lambda z: z not in _select_codes(code)
+    )

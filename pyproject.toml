@@ -1,31 +1,29 @@
-[tool.poetry]
-name = "countrycode"
-version = "0.4.0"
+[project]
+name = "pycountrycode"
+version = "0.4.1"
 description = ""
-authors = ["Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.9"
-polars = {version = "^0.18.3", optional = true}
-pandas = {version = "^2.1.0", optional = true}
-
-[tool.poetry.extras]
-polars = ["polars"]
-pandas = ["pandas"]
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.3.2"
-jupyter = "^1.0.0"
-black = "^23.3.0"
-flake8 = "^6.0.0"
-isort = "^5.12.0"
-hypothesis = "^6.80.0"
-
-[tool.black]
-line-length = 110
+requires-python = ">=3.9"
+dependencies = [
+]
+authors = [{ name = "Vincent Arel-Bundock", email = "vincent.arel-bundock@umontreal.ca" }]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+pandas = ["pandas>=2.0.0"]
+polars = ["polars>=1.0.0"]
+full = ["pandas>=2.0.0", "polars>=1.0.0"]
+
+[tool.uv]
+dev-dependencies = [
+  "pytest >=8.1.1,<9",
+  "pytest-xdist >=3.6.1",
+  "ruff>=0.6.4",
+  "hypothesis>=6.131.28",
+  "pre-commit",
+]
+
+[tool.setuptools.package-data]
+countrycode = ["data/*.csv"]

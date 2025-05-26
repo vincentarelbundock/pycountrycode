@@ -14,12 +14,14 @@ except ImportError:
 pkg_dir, pkg_filename = os.path.split(__file__)
 data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 
-with open(data_path, encoding='utf-8') as f:
+with open(data_path, encoding="utf-8") as f:
     rows = csv.reader(f)
     codelist = {col[0]: list(col[1:]) for col in zip(*rows)}
 
 
-def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.name.en"):
+def countrycode(
+    sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.name.en"
+):
     """
     Convert country codes or names from one format to another.
 
@@ -58,7 +60,12 @@ def countrycode(sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.n
     if origin == "country.name":
         origin = "country.name.en.regex"
 
-    if origin in ["country.name.en", "country.name.fr", "country.name.de", "country.name.it"]:
+    if origin in [
+        "country.name.en",
+        "country.name.fr",
+        "country.name.de",
+        "country.name.it",
+    ]:
         origin = origin + ".regex"
 
     if destination == "country.name":
@@ -176,7 +183,9 @@ def replace_regex(sourcevar, origin, destination):
     sourcevar_unique = list(set(sourcevar))
     o = []
     d = []
-    for i, (val_origin, val_destination) in enumerate(zip(codelist[origin], codelist[destination])):
+    for i, (val_origin, val_destination) in enumerate(
+        zip(codelist[origin], codelist[destination])
+    ):
         if val_origin != "" and val_destination != "":
             o.append(re.compile(val_origin, flags=re.IGNORECASE))
             d.append(val_destination)
@@ -192,5 +201,8 @@ def replace_regex(sourcevar, origin, destination):
         if not match_found:
             result.append(None)
     mapping = dict(zip(sourcevar_unique, result))
-    out = [int(mapping[i]) if mapping[i] and mapping[i].isdigit() else mapping[i] for i in sourcevar]
+    out = [
+        int(mapping[i]) if mapping[i] and mapping[i].isdigit() else mapping[i]
+        for i in sourcevar
+    ]
     return out

@@ -15,7 +15,12 @@ _regex_internal_skip_reason = "Test requires polars installation"
 if not _has_polars:
     pytest.skip(_regex_internal_skip_reason, allow_module_level=True)
 
-from custom_strategies_polars import build_invalid_code, build_valid_code, select_filtered_row
+from custom_strategies_polars import (
+    build_invalid_code,
+    build_valid_code,
+    select_filtered_row,
+)
+
 
 @given(code_param=build_valid_code("iso3c"))
 @example(code_param="CAN")
@@ -34,7 +39,7 @@ equivalent to finding the corresponding cell in the countrycode dataframe.
 @example(code_param="AFG")
 def test_iso3c_conversion(code_param):
     expected = select_filtered_row("iso3c", code_param)
-    assert countrycode(code_param, "iso3c", 'country.name') == expected
+    assert countrycode(code_param, "iso3c", "country.name") == expected
 
 
 """
@@ -45,7 +50,7 @@ countrycode function will return None
 
 @given(code_param=build_invalid_code("iso3c"))
 def test_iso3c_invalid_conversion(code_param):
-    assert countrycode(code_param, "iso3c", 'country.name') is None
+    assert countrycode(code_param, "iso3c", "country.name") is None
 
 
 """
@@ -57,7 +62,7 @@ equivalent to finding the corresponding cell in the countrycode dataframe.
 @given(code_param=build_valid_code("fips"))
 def test_fips_conversion(code_param):
     expected = select_filtered_row("fips", code_param)
-    assert countrycode(code_param, "fips", 'country.name') == expected
+    assert countrycode(code_param, "fips", "country.name") == expected
 
 
 """
@@ -68,4 +73,4 @@ function will return None
 
 @given(code_param=build_invalid_code("fips"))
 def test_fips_invalid_conversion(code_param):
-    assert countrycode(code_param, "fips", 'country.name') is None
+    assert countrycode(code_param, "fips", "country.name") is None
