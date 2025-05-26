@@ -1,1 +1,1 @@
-from .countrycode import codelist, countrycode
+from .countrycode import codelist, countrycode  # noqa
