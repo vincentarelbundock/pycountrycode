@@ -1,4 +1,4 @@
-name: Package Linting
+name: Lint
 
 on:
   push:

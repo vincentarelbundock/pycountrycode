@@ -47,7 +47,7 @@ def test_english_regex():
             destination="cldr.short.en",
         )
     )
-    assert (tmp["test"] != tmp["cldr.short.en"]).any() == False
+    assert not (tmp["test"] != tmp["cldr.short.en"]).any()
 
 
 # Test Italian regex vs. cldr.short.it
@@ -60,7 +60,7 @@ def test_italian_regex():
             destination="cldr.short.it",
         )
     )
-    assert (tmp["test"] != tmp["cldr.short.it"]).any() == False
+    assert not (tmp["test"] != tmp["cldr.short.it"]).any()
 
 
 # Test German regex vs. cldr.short.de
@@ -73,7 +73,7 @@ def test_german_regex():
             destination="cldr.short.de",
         )
     )
-    assert (tmp["test"] != tmp["cldr.short.de"]).any() == False
+    assert not (tmp["test"] != tmp["cldr.short.de"]).any()
 
 
 # Test French regex vs. cldr.short.fr
@@ -86,4 +86,4 @@ def test_french_regex():
             destination="cldr.short.fr",
         )
     )
-    assert (tmp["test"] != tmp["cldr.short.fr"]).any() == False
+    assert not (tmp["test"] != tmp["cldr.short.fr"]).any()

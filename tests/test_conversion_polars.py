@@ -1,19 +1,6 @@
-import pytest
 from hypothesis import given, example
 
 from countrycode import countrycode
-
-try:
-    import polars as pl
-
-    _has_polars = True
-except ImportError:
-    _has_polars = False
-
-_regex_internal_skip_reason = "Test requires polars installation"
-
-if not _has_polars:
-    pytest.skip(_regex_internal_skip_reason, allow_module_level=True)
 
 from custom_strategies_polars import (
     build_invalid_code,
