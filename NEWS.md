@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+* Missing values in `codelist` are `None` rather than empty string "".
+* poetry -> uv
+
 ## 0.4.0
 
 * Drop `polars` and `pandas` dependencies.

@@ -16,7 +16,7 @@ data_path = os.path.join(pkg_dir, "data", "codelist.csv")
 
 with open(data_path, encoding="utf-8") as f:
     rows = csv.reader(f)
-    codelist = {col[0]: list(col[1:]) for col in zip(*rows)}
+    codelist = {col[0]: [None if x == "" else x for x in col[1:]] for col in zip(*rows)}
 
 
 def countrycode(
@@ -165,10 +165,10 @@ def replace_exact(sourcevar, origin, destination):
     for string in sourcevar:
         match_found = False
         for position, origin_i in enumerate(codelist[origin]):
-            if origin_i == "" or codelist[destination][position] == "":
+            if origin_i is None or codelist[destination][position] is None:
                 continue
             if string == origin_i:
-                if codelist[destination][position].isdigit():
+                if isinstance(codelist[destination][position], str) and codelist[destination][position].isdigit():
                     out.append(int(codelist[destination][position]))
                 else:
                     out.append(codelist[destination][position])
@@ -186,7 +186,7 @@ def replace_regex(sourcevar, origin, destination):
     for i, (val_origin, val_destination) in enumerate(
         zip(codelist[origin], codelist[destination])
     ):
-        if val_origin != "" and val_destination != "":
+        if val_origin is not None and val_destination is not None:
             o.append(re.compile(val_origin, flags=re.IGNORECASE))
             d.append(val_destination)
 
@@ -202,7 +202,7 @@ def replace_regex(sourcevar, origin, destination):
             result.append(None)
     mapping = dict(zip(sourcevar_unique, result))
     out = [
-        int(mapping[i]) if mapping[i] and mapping[i].isdigit() else mapping[i]
+        int(mapping[i]) if mapping[i] and isinstance(mapping[i], str) and mapping[i].isdigit() else mapping[i]
         for i in sourcevar
     ]
     return out
