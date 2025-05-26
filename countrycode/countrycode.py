@@ -1,6 +1,7 @@
 import csv
 import os
 import re
+import pickle
 
 try:
     import polars as pl
@@ -12,11 +13,10 @@ except ImportError:
     pd = None
 
 pkg_dir, pkg_filename = os.path.split(__file__)
-data_path = os.path.join(pkg_dir, "data", "codelist.csv")
+data_path = os.path.join(pkg_dir, "data", "codelist.pickle")
 
-with open(data_path, encoding="utf-8") as f:
-    rows = csv.reader(f)
-    codelist = {col[0]: [None if x == "" else x for x in col[1:]] for col in zip(*rows)}
+with open(data_path, "rb") as f:
+    codelist = pickle.load(f)
 
 
 def countrycode(
@@ -29,8 +29,8 @@ def countrycode(
     format, such as ISO 3-letter codes, country names in different languages, etc.
 
     Parameters:
-    sourcevar (list, str, or polars.series.series.Series, optional):
-        A list, string, or Polars Series of country codes or names to be converted. Default is ['DZA', 'CAN'].
+    sourcevar (list, str, int, or polars.series.series.Series, optional):
+        A list, string, integer, or Polars Series of country codes or names to be converted. Default is ['DZA', 'CAN'].
     origin (str, optional):
         The format of the input country codes or names. Default is 'iso3c'.
     destination (str, optional):
@@ -127,7 +127,7 @@ def countrycode(
     if pd:
         if isinstance(sourcevar, pd.Series):
             sourcevar_series = sourcevar.to_list()
-    if isinstance(sourcevar, str):
+    if isinstance(sourcevar, (str, int)):
         sourcevar_series = [sourcevar]
 
     # conversion
@@ -142,7 +142,7 @@ def countrycode(
         out = replace_exact(sourcevar_series, origin, destination)
 
     # output type
-    if isinstance(sourcevar, str) | isinstance(sourcevar, int):
+    if isinstance(sourcevar, (str, int)):
         return out[0]
     elif pl and isinstance(sourcevar, pl.series.series.Series):
         return pl.Series(out)

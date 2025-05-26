@@ -1,5 +1,5 @@
 [project]
-name = "pycountrycode"
+name = "countrycode"
 version = "0.5.0"
 description = ""
 requires-python = ">=3.9"
@@ -21,9 +21,10 @@ dev-dependencies = [
   "pytest >=8.1.1,<9",
   "pytest-xdist >=3.6.1",
   "ruff>=0.6.4",
+  "jupyter",
   "hypothesis>=6.131.28",
   "pre-commit",
 ]
 
 [tool.setuptools.package-data]
-countrycode = ["data/*.csv"]
+countrycode = ["data/*.pickle"]
