@@ -100,5 +100,5 @@ countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
 
 ```{python}
 from countrycode import codelist
-", ".join(codelist.columns)
+", ".join(codelist.keys())
 ```
