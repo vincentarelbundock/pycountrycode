@@ -11,29 +11,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup python 3.9
+      - name: Setup python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.12'
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.5.1
-          virtualenvs-create: false
-
-      - name: Install deps
+      - name: Install uv
         run: |
-          poetry install --with=dev
+          curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      - name: Check isort formatting
+      - name: Install dependencies
         run: |
-          poetry run isort countrycode --check
+          uv venv;uv pip install .
 
-      - name: Check black formatting
-        run: | 
-          poetry run black countrycode --check
+      - name: Convert CSV to pickle
+        run: |
+          uv run python csv2pickle.py
 
-      - name: Check flake8
-        run: | 
-          poetry run flake8 countrycode
+      - name: Run tests
+        run: |
+          uv run pytest
+
+      - name: Check
+        run: |
+          uv run --all-extras ruff check countrycode tests
+          uv run --all-extras ruff format countrycode
+          uv run --all-extras ruff format tests
+

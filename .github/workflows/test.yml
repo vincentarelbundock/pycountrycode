@@ -12,6 +12,7 @@ jobs:
         python:
           - "3.9"
           - "3.11"
+          - "3.12"
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout code
@@ -22,24 +23,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.5.1
-          virtualenvs-create: false
-
-      - name: Install dependencies
+      - name: Install uv
         run: |
-          poetry install --with=dev
+          curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      - name: Run pytest
+      - name: Run tests
         run: |
-          pytest
-
-      - name: Install polars
-        run: |
-            poetry install --all-extras
-
-      - name: Repeat tests with polars support
-        run: |
-            pytest
+          uv run pytest --all-extras
