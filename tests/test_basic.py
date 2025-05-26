@@ -30,46 +30,45 @@ def test_invalid_iso3c_to_country_name():
 
 def test_readme_examples():
     # Example 1: Convert ISO numeric codes to French country names
-    assert countrycode([12, 124], origin="iso3n", destination="cldr.short.fr") == ["Algérie", "Canada"]
+    assert countrycode([12, 124], origin="iso3n", destination="cldr.short.fr") == [
+        "Algérie",
+        "Canada",
+    ]
 
     assert countrycode(12, origin="iso3n", destination="cldr.short.fr") == "Algérie"
 
     # Example 2: Convert country names to ISO3C codes
     assert countrycode(
-        ["canada", "United States", "alGeria"], 
-        origin="country.name.en.regex", 
-        destination="iso3c"
+        ["canada", "United States", "alGeria"],
+        origin="country.name.en.regex",
+        destination="iso3c",
     ) == ["CAN", "USA", "DZA"]
 
     # Example 3: Convert using Polars Series
     result = countrycode(
-        pl.Series(["DZA", "CAN", "USA"]), 
-        origin="iso3c", 
-        destination="cldr.short.fr"
+        pl.Series(["DZA", "CAN", "USA"]), origin="iso3c", destination="cldr.short.fr"
     )
     assert isinstance(result, pl.Series)
     assert result.to_list() == ["Algérie", "Canada", "É.-U."]
 
     # Example 4: Convert ISO3C to ISO numeric
-    assert countrycode(
-        ["DZA", "CAN", "USA"], 
-        origin="iso3c", 
-        destination="iso3n"
-    ) == [12, 124, 840]
+    assert countrycode(["DZA", "CAN", "USA"], origin="iso3c", destination="iso3n") == [
+        12,
+        124,
+        840,
+    ]
 
     # Example 5: Convert single ISO numeric to German country name
     assert countrycode(12, origin="iso3n", destination="cldr.short.de") == "Algerien"
 
     # Example 6: Convert long country names to ISO3C
     assert countrycode(
-        ["Democratic Republic of Vietnam", "Algeria"], 
-        origin="country.name.en.regex", 
-        destination="iso3c"
+        ["Democratic Republic of Vietnam", "Algeria"],
+        origin="country.name.en.regex",
+        destination="iso3c",
     ) == ["VNM", "DZA"]
 
     # Example 7: Convert German country name to ISO3C
-    assert countrycode(
-        ["Algerien"], 
-        origin="country.name.de", 
-        destination="iso3c"
-    ) == ["DZA"]
+    assert countrycode(["Algerien"], origin="country.name.de", destination="iso3c") == [
+        "DZA"
+    ]
