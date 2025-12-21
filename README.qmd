@@ -96,6 +96,36 @@ countrycode(["Democratic Republic of Vietnam", "Algeria"], origin = "country.nam
 countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
 ```
 
+## Polars DataFrame examples
+
+When working inside a Polars pipeline, you can enrich a DataFrame by calling `countrycode` directly on a column. `map_batches` keeps the computation lazy-friendly:
+
+```{python}
+import polars as pl
+from countrycode import countrycode
+
+df = pl.DataFrame(
+    {
+        "name": ["France", "Germany"],
+    }
+)
+
+df.with_columns(
+    pl.col("name")
+      .map_batches(lambda s: countrycode(s, "country.name", "iso3c"), return_dtype=pl.String)
+      .alias("iso3c")
+)
+```
+
+If you already have a `Series` (e.g., after materializing a lazy query), you can also pass it to `countrycode` directly and attach the result as a new column:
+
+```{python}
+df.with_columns(
+    countrycode(df["name"], "country.name", "iso3c").alias("iso3c")
+)
+```
+
+
 # Supported codes: Full list 
 
 ```{python}

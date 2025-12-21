@@ -1,4 +1,4 @@
-# Supported codes: Full list
+# Polars DataFrame examples
 
 
 Warning: This is *alpha* software.
@@ -144,6 +144,73 @@ countrycode(["Algerien"], origin = "country.name.de", destination = "iso3c")
 ```
 
     ['DZA']
+
+When working inside a Polars pipeline, you can enrich a DataFrame by
+calling `countrycode` directly on a column. `map_batches` keeps the
+computation lazy-friendly:
+
+``` python
+import polars as pl
+from countrycode import countrycode
+
+df = pl.DataFrame(
+    {
+        "name": ["France", "Germany"],
+    }
+)
+
+df.with_columns(
+    pl.col("name")
+      .map_batches(lambda s: countrycode(s, "country.name", "iso3c"), return_dtype=pl.String)
+      .alias("iso3c")
+)
+```
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 2)</small>
+
+| name      | iso3c |
+|-----------|-------|
+| str       | str   |
+| "France"  | "FRA" |
+| "Germany" | "DEU" |
+
+</div>
+
+If you already have a `Series` (e.g., after materializing a lazy query),
+you can also pass it to `countrycode` directly and attach the result as
+a new column:
+
+``` python
+df.with_columns(
+    countrycode(df["name"], "country.name", "iso3c").alias("iso3c")
+)
+```
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2, 2)</small>
+
+| name      | iso3c |
+|-----------|-------|
+| str       | str   |
+| "France"  | "FRA" |
+| "Germany" | "DEU" |
+
+</div>
+
+# Supported codes: Full list
 
 ``` python
 from countrycode import codelist
