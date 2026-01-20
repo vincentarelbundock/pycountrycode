@@ -13,10 +13,11 @@ except ImportError:
 
 pkg_dir, pkg_filename = os.path.split(__file__)
 
-def load_dict(data_path: str = os.path.join(pkg_dir, 'data', 'codelist.pickle')):
+
+def load_dict(data_path: str = os.path.join(pkg_dir, "data", "codelist.pickle")):
     """
     Load a pickle file containing the countrycode translations.
-    
+
     Parameters:
     data_path (str):
         The path to a `.pickle` file to be used for matching codes.
@@ -25,21 +26,28 @@ def load_dict(data_path: str = os.path.join(pkg_dir, 'data', 'codelist.pickle'))
 
     fileextension = os.path.splitext(data_path)[1]
 
-    if fileextension != '.pickle':
-        raise NotImplementedError(f'Custom dicts with `{fileextension}` are not implemented yet. Please use a `.pickle` file or None (to use the default).')
+    if fileextension != ".pickle":
+        raise NotImplementedError(
+            f"Custom dicts with `{fileextension}` are not implemented yet. Please use a `.pickle` file or None (to use the default)."
+        )
 
     try:
-        with open(data_path, 'rb') as f:
+        with open(data_path, "rb") as f:
             codelist = pickle.load(f)
-    
-    except:
-        raise FileNotFoundError(f'Could not find file at `{data_path}`. Please make sure the file exists at the provided path.')
-    
+
+    except Exception:
+        raise FileNotFoundError(
+            f"Could not find file at `{data_path}`. Please make sure the file exists at the provided path."
+        )
+
     return codelist
 
 
 def countrycode(
-    sourcevar=["DZA", "CAN"], origin="iso3c", destination="country.name.en", custom_dict = None 
+    sourcevar=["DZA", "CAN"],
+    origin="iso3c",
+    destination="country.name.en",
+    custom_dict=None,
 ):
     """
     Convert country codes or names from one format to another.
@@ -55,7 +63,7 @@ def countrycode(
     destination (str, optional):
         The desired format of the output country codes or names. Default is 'country.name.en'.
     custom_dict (str, dict, optional):
-        A custom dictionary to be used. Can either be a path to an existing `.pickle` file or a dictionary. Default is None, i.e. the default dict is used. 
+        A custom dictionary to be used. Can either be a path to an existing `.pickle` file or a dictionary. Default is None, i.e. the default dict is used.
 
     Returns:
     list, str, or polars.series.series.Series:
@@ -72,7 +80,7 @@ def countrycode(
         If the custom_file is a string (path to dict file) but not a `.pickle` file.
         If the custom_dict argument is neither str, None or dict.
     FileNotFoundError:
-        If the custom_file is a string (path to dict file) and a pickle file but does not exist. 
+        If the custom_file is a string (path to dict file) and a pickle file but does not exist.
 
     Example:
     >>> countrycode(['DZA', 'CAN'], origin='iso3c', destination='country.name.en')
@@ -84,20 +92,21 @@ def countrycode(
 
     # Load the codelist dict.
     if isinstance(custom_dict, str):
-        # If the custom dict argument is a string it will be interpreted as a path to load 
+        # If the custom dict argument is a string it will be interpreted as a path to load
         # the custom dict from.
         codelist = load_dict(custom_dict)
-    
+
     elif isinstance(custom_dict, dict):
         codelist = custom_dict
 
-    elif custom_dict == None:
+    elif custom_dict is None:
         # Default data path is just data/codelist.pickle
         codelist = load_dict()
 
     else:
-        raise NotImplementedError(f'The custom_dict has to be either None (to use the default dict), dict or str NOT {type(custom_dict)}')
-
+        raise NotImplementedError(
+            f"The custom_dict has to be either None (to use the default dict), dict or str NOT {type(custom_dict)}"
+        )
 
     # user convenience shortcuts only for default dict
     if origin == "country.name":
@@ -106,7 +115,7 @@ def countrycode(
     if origin in [
         "country.name.en",
         "country.name.fr",
-        "country.name.de", 
+        "country.name.de",
         "country.name.it",
     ]:
         origin = origin + ".regex"
