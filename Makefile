@@ -12,6 +12,7 @@ readme: ## render Quarto readme
 
 lint: ## run the lint checkers
 	uv run --all-extras ruff check countrycode
+	uv run --all-extras ruff check tests
 	uv run --all-extras ruff format countrycode
 	uv run --all-extras ruff format tests
 

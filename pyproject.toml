@@ -24,8 +24,8 @@ pandas = ["pandas>=2.0.0"]
 polars = ["polars>=1.0.0"]
 full = ["pandas>=2.0.0", "polars>=1.0.0"]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
   "pytest >=8.1.1,<9",
   "pytest-xdist >=3.6.1",
   "ruff>=0.6.4",
