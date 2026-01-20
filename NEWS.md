@@ -1,5 +1,9 @@
 # Changelog
 
+## Development
+
+* Adds support for custom country code dictionaries in countrycode(). Users can now supply either a dictionary object or a path to a .pickle file via the new `custom_dict` argument to override the built-in conversion table when performing code and name translations.
+
 ## 0.5.0
 
 * Missing values in `codelist` are `None` rather than empty string "".
